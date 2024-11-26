@@ -1,0 +1,8 @@
+POST http://localhost:8080/job/addTemplate
+Content-Type: application/json
+
+{
+  "name": "Build Backend",
+  "runsOn":"ubuntu",
+  "filePart": "build-backend:\nname: build-backend-prod\nruns-on: ubuntu-latest\nsteps:\n- uses: actions/checkout@v3\n- name: Set up JDK 21\nuses: actions/setup-java@v3\nwith:\njava-version: '21'"
+}

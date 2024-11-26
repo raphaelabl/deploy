@@ -1,0 +1,16 @@
+<div class="input-form">
+  <mat-form-field>
+    <mat-label>Job Name</mat-label>
+    <input matInput [(ngModel)]="inputJobTemplate.name" >
+  </mat-form-field>
+  <mat-form-field>
+    <!--TODO later dropdown--->
+    <mat-label>Runs On</mat-label>
+    <input matInput [(ngModel)]="inputJobTemplate.runsOn">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Job</mat-label>
+    <textarea matInput [(ngModel)]="inputJobTemplate.filePart!"></textarea>
+  </mat-form-field>
+  <button mat-raised-button (click)="postJobTemplate()">Submit</button>
+</div>
