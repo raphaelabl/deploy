@@ -14,6 +14,9 @@ public class Job extends PanacheEntity {
     @OneToMany
     public List<JobAttribute> atributeList;
 
+    //region Constructor
     public Job() {
     }
+    //endregion
+
 }

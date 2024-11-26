@@ -13,6 +13,9 @@ public class JobTemplate extends PanacheEntity {
     @Column(columnDefinition = "TEXT")
     public String filePart;
 
+    //region Constructor
     public JobTemplate() {
     }
+    //endregion
+
 }

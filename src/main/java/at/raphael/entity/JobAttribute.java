@@ -10,6 +10,7 @@ public class JobAttribute extends PanacheEntity {
     public String value;
 
 
+    //region Constructor
     public JobAttribute() {
     }
 
@@ -17,5 +18,6 @@ public class JobAttribute extends PanacheEntity {
         this.name = name;
         this.value = value;
     }
+    //endregion
 
 }

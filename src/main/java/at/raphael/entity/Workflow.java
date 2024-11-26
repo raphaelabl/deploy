@@ -15,6 +15,11 @@ public class Workflow extends PanacheEntity {
     @OneToMany
     List<JobTemplate> steps;
 
+
+    //region Constructor
     public Workflow() {
     }
+    //endregion
+
+
 }
