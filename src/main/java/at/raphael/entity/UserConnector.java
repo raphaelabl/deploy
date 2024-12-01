@@ -1,16 +1,18 @@
 package at.raphael.entity;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 
 import java.util.List;
 
-public class UserConnector {
+@Entity
+public class UserConnector extends PanacheEntity {
     public String username;
     public String token;
-    public List<RepoInfo> choosenRepos;
 
     @Transient
-    public List<RepoInfo> repositories;
+    public List<RepositoryInfo> repositories;
 
     public UserConnector() {
     }

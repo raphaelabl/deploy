@@ -11,15 +11,15 @@ import java.util.List;
 @Path("job")
 public class JobResource {
 
-    @Path("getAllTemplates")
     @GET
+    @Path("getAllTemplates")
     public Response getAllJobs() {
         List<JobTemplate> allJobs = JobTemplate.listAll();
         return Response.ok(allJobs).build();
     }
 
-    @Path("addTemplate")
     @POST
+    @Path("addTemplate")
     @Transactional
     public Response addJobTemplate(JobTemplate jobTemplate) {
         JobTemplate responseTemplate = jobTemplate;
@@ -32,7 +32,7 @@ public class JobResource {
             responseTemplate = persited;
         }
 
-        return Response.ok(jobTemplate).build();
+        return Response.ok(responseTemplate).build();
     }
 
 

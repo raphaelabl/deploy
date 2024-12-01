@@ -1,4 +1,4 @@
-export interface Repository {
+export interface RepositoryInfo {
   description: string;
   fullName: string;
   htmlUrl: string;

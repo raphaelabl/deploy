@@ -21,7 +21,7 @@
     <hr>
     <div class="col-3">
       <mat-selection-list [multiple]="false" [(ngModel)]="inputWorkflow.ghRepository" role="list">
-        <mat-list-option *ngFor="let r of ghUser.repositories" [value]="r">{{ r.name }}</mat-list-option>
+        <mat-list-option *ngFor="let r of ghUser!.repositories" [value]="r">{{ r.name }}</mat-list-option>
       </mat-selection-list>
     </div>
   </ng-container>
@@ -39,7 +39,8 @@
 
   <!--Step 3 Variable Definition---->
   <ng-container *ngIf="step === 3">
-    <h3>Step 3</h3>
+    <h3>Variable specification</h3>
+    <h5>Please specify all required variables!</h5>
     <hr>
     <div class="row">
       <ng-container class="col-3" *ngFor="let m of inputWorkflow.modules">
@@ -52,7 +53,7 @@
     </div>
   </ng-container>
 
-  <!--Step 3 Variable specification---->
+  <!--Step 3 Variable specification--
   <ng-container *ngIf="step === 4">
     <h3>Variable specification</h3>
     <h5>Please specify all required variables!</h5>
@@ -62,7 +63,7 @@
         <mat-list-option *ngFor="let j of allJobTemplates" [value]="j">{{ j.name }}</mat-list-option>
       </mat-selection-list>
     </div>
-  </ng-container>
+  </ng-container>-->
 
 </div>
 
@@ -72,8 +73,11 @@
     <button mat-raised-button *ngIf="step !== 0" (click)="addSiteStep(-1)">
       Back <i class="fas fa-arrow-left"></i>
     </button>
-    <button mat-raised-button (click)="addSiteStep(+1)" style="margin-left: 0.2rem">
+    <button mat-raised-button *ngIf="step <= 3" [disabled]="!canForwardStep()" (click)="addSiteStep(+1)" style="margin-left: 0.2rem">
       Next <i class="fas fa-arrow-right"></i>
+    </button>
+    <button mat-raised-button *ngIf="step === 4" (click)="saveWorkflow()" style="margin-left: 0.2rem">
+      Save <i class="fas fa-arrow-right"></i>
     </button>
   </div>
 </div>

@@ -1,7 +1,7 @@
-import {Repository} from './repository';
+import {RepositoryInfo} from './repository-info';
 
 export interface UserConnector {
   username: string;
   token: string;
-  repositories: Repository[];
+  repositories: RepositoryInfo[];
 }

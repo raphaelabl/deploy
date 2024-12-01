@@ -1,6 +1,6 @@
 package at.raphael.control;
 
-import at.raphael.entity.RepoInfo;
+import at.raphael.entity.RepositoryInfo;
 import at.raphael.entity.UserConnector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -80,7 +80,7 @@ public class GithubService {
     //endregion
 
     //region Repositories
-    private List<RepoInfo> getRepositoriesPerToken(String accessToken) throws IOException {
+    private List<RepositoryInfo> getRepositoriesPerToken(String accessToken) throws IOException {
         URL url = new URL(GITHUB_API_URL + "/repos");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -94,7 +94,7 @@ public class GithubService {
 
         // Repositories in eine Liste von RepoInfo umwandeln
         return repos.stream()
-                .map(repo -> new RepoInfo(
+                .map(repo -> new RepositoryInfo(
                         repo.get("name").toString(),
                         repo.get("full_name").toString(),
                         repo.get("description") != null ? repo.get("description").toString() : "Keine Beschreibung",

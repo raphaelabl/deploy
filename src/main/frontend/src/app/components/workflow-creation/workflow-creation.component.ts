@@ -5,7 +5,6 @@ import {Workflow} from '../../models/workflow.model';
 import {UserService} from '../../services/user.service';
 import {UserConnector} from '../../models/user-connector';
 import {Job} from '../../models/job';
-import {JobAttribute} from '../../models/job-attribute';
 
 @Component({
   selector: 'app-workflow-creation',
@@ -94,11 +93,40 @@ export class WorkflowCreationComponent implements OnInit {
       }
     })
   }
+
+  saveWorkflow(){
+    this.http.postWorkflow(this.inputWorkflow).subscribe({
+      next: data => {
+        this.inputWorkflow = data;
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
+  }
   //endregion
 
   //region Site Paging
   addSiteStep(amount: number) {
     this.step += amount;
+  }
+
+  canForwardStep(){
+    if(this.step === 0 && this.userService.isUserLoggedIn()){
+      return true;
+    }else if(this.step === 1 && this.inputWorkflow.ghRepository !== null && this.inputWorkflow.ghRepository !== undefined){
+      return true;
+    }else if(this.step === 2 && this.inputWorkflow.modules !== undefined && this.inputWorkflow.modules!.length >= 0){
+      return true;
+    }else if(this.step === 3){
+      let attributes = this.inputWorkflow.modules!
+                                  .map(element =>
+                                    element.attributeList!.map(attribute => attribute.value)
+                                  ).flat()
+      return attributes.filter(element => (element === null || element === undefined || element === "")).length === 0;
+    }
+
+    return false;
   }
   //endregion
 
@@ -116,5 +144,4 @@ export class WorkflowCreationComponent implements OnInit {
     }
   //endregion
 
-  protected readonly input = input;
 }
