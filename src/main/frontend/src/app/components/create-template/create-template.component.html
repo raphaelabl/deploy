@@ -1,16 +1,54 @@
-<div class="input-form">
-  <mat-form-field>
-    <mat-label>Job Name</mat-label>
-    <input matInput [(ngModel)]="inputJobTemplate.name" >
-  </mat-form-field>
-  <mat-form-field>
-    <!--TODO later dropdown--->
-    <mat-label>Runs On</mat-label>
-    <input matInput [(ngModel)]="inputJobTemplate.runsOn">
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Job</mat-label>
-    <textarea matInput [(ngModel)]="inputJobTemplate.filePart!"></textarea>
-  </mat-form-field>
-  <button mat-raised-button (click)="postJobTemplate()">Submit</button>
+<div class="row outerStyle">
+  <div class="col-6 input-form">
+    <mat-form-field>
+      <mat-label>Job Name</mat-label>
+      <input matInput [(ngModel)]="inputJobTemplate.name" >
+    </mat-form-field>
+    <mat-form-field>
+      <!--TODO later dropdown--->
+      <mat-label>Runs On</mat-label>
+      <input matInput [(ngModel)]="inputJobTemplate.runsOn">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Job</mat-label>
+      <textarea cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="20" matInput [(ngModel)]="inputJobTemplate.filePart!"></textarea>
+    </mat-form-field>
+    <button mat-raised-button (click)="postJobTemplate()">Submit</button>
+  </div>
+  <div class="col-3 d-flex flex-column" *ngIf="inputJobTemplate.id != null && inputJobTemplate.id != 0">
+    <mat-form-field>
+      <mat-label>Variable eingeben</mat-label>
+      <input matInput [(ngModel)]="inputVariable.value">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Copy Variable</mat-label>
+      <input matInput [disabled]="true" [ngModel]="'#{'+inputVariable.value+'}#'">
+    </mat-form-field>
+    <button mat-raised-button (click)="addVariable()">{{(inputVariable.idx === -1)?"Add variable":"Edit variable"}}</button>
+    <div class="varList">
+      <mat-label>Variablen</mat-label>
+      <mat-list role="list" class="varList w-100">
+        <mat-list-item *ngFor="let v of inputJobTemplate!.variables; let i = index"
+                       class="w-100" style="border-top: 1px solid #ccc;">
+          <div class="item-content">
+            <p>{{v}}</p>
+            <div>
+              <button mat-raised-button (click)="editVar(i)"><i class="fas fa-edit"></i></button>
+              <button mat-raised-button (click)="popVarAt(i)" style="margin-left: 0.2rem"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
+  <div class="col-1 input-form">
+    <mat-list role="list">
+      <mat-list-item *ngFor="let j of jobTemplateList" (click)="editJobClick(j)">{{ j.name }}</mat-list-item>
+    </mat-list>
+  </div>
 </div>
+<ng-container class="errorList">
+  <mat-list role="list" >
+    <mat-list-item *ngFor="let e of allMessage" class="border-1" style="background-color: rgb(255, 40, 40, 0.5)">{{e.message}}</mat-list-item>
+  </mat-list>
+</ng-container>

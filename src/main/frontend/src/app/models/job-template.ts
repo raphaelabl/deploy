@@ -3,4 +3,5 @@ export interface JobTemplate {
   name?:string;
   runsOn?:string;
   filePart?:string;
+  variables?: string[];
 }
