@@ -1,1 +1,29 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <!-- Menü-Inhalt -->
+    <div class="collapse navbar-collapse screenView" id="navbarNav">
+      <ul class="navbar-nav">
+        <!---<li class="nav-item">
+          <a class="nav-link" href="#">ACCOUNT</a>
+        </li>---->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fas fa-bars"></i>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="workflow-creation">New Workflow <i class="fas fa-wrench"></i></a></li>
+            <li><a class="dropdown-item" href="job-templates">Create Job Template <i class="fas fa-hammer"></i></a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <router-outlet></router-outlet>

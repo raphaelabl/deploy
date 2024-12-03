@@ -1,9 +1,31 @@
 .input-form{
-  justify-self: center;
-  align-self: center;
-  width: 50%;
   background: rgb(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.outerStyle {
+  display: flex;
+  margin-top: 4rem;
+  align-content: center;
+  justify-content: center;
+}
+
+.varList{
+  margin-top: 1rem;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.item-content{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-direction: row;
+  width: 100%;
 }
