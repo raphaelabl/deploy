@@ -1,27 +1,29 @@
 package at.raphael.boundary;
 
+import at.raphael.entity.Job;
+import at.raphael.entity.JobTemplate;
 import at.raphael.entity.Workflow;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("workflow")
 public class WorkflowResource{
 
     @POST
-    @Path("addWorkflow")
+    @Path("/addWorkflow")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response addWorkflow(Workflow workflow){
-        Workflow responseWorkflow = workflow;
-
-        if(workflow.id == null || workflow.id == 0) {
-            workflow.persist();
-        }else{
-            Workflow persited = Workflow.findById(workflow.id);
-            persited.update(workflow);
-            responseWorkflow = persited;
+        for(Job j : workflow.modules){
+            JobTemplate refTemplate = JobTemplate.findById(j.refTemplate.id);
+            j.refTemplate = refTemplate;
         }
-
-        return Response.ok(responseWorkflow).build();
+        workflow.persist();
+        return Response.ok(workflow).build();
     }
 
 

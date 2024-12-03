@@ -30,6 +30,7 @@ export class WorkflowCreationComponent implements OnInit {
   constructor(private http: HttpService, private userService: UserService) {
     if(userService.isUserLoggedIn()){
       this.ghUser = userService.getUserConnector();
+      this.inputWorkflow.ghUser = this.ghUser;
       this.step++;
     }
   }
@@ -134,6 +135,7 @@ export class WorkflowCreationComponent implements OnInit {
   logOut(){
     this.userService.logOut();
     this.ghUser = undefined!;
+    this.inputWorkflow.ghUser = undefined!;
     this.step = 0;
   }
   //endregion

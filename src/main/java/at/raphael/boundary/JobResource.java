@@ -28,7 +28,13 @@ public class JobResource {
             jobTemplate.persist();
         }else{
             JobTemplate persited = JobTemplate.findById(jobTemplate.id);
-            persited.update(jobTemplate);
+            //persited.update(jobTemplate);
+
+            persited.filePart = jobTemplate.filePart;
+            persited.name = jobTemplate.name;
+            persited.variables = jobTemplate.variables;
+            persited.runsOn = jobTemplate.runsOn;
+
             responseTemplate = persited;
         }
 

@@ -27,7 +27,10 @@ export class HttpService {
 
   //region Workflow
   postWorkflow(workflow: Workflow):Observable<Workflow> {
-    return this.http.post<Workflow>(this.BACKEND_URL + "workflow/newWorkflow", workflow);
+    if (Array.isArray(workflow.ghRepository)) {
+      workflow.ghRepository = workflow.ghRepository.length > 0 ? workflow.ghRepository[0] : null;
+    }
+    return this.http.post<Workflow>(this.BACKEND_URL + "workflow/addWorkflow", workflow);
   }
   //endregion
 
