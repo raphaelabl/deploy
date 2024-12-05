@@ -6,26 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.*;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.jboss.logging.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -53,60 +47,61 @@ public class GithubService {
     }
 
     //region Files Commit
+    public void pushFilesToRepository(
+            File dir,
+            UsernamePasswordCredentialsProvider user,
+            RepositoryInfo repository,
+            File dirForFileInRepo,
+            String fileContent
+            ) throws IOException, GitAPIException {
+        deleteDirectory(dir);
 
+        Git git = cloneRepositoryWithNoCheckoutToDir(dir, user, repository);
+        pushRepository(git, user, dirForFileInRepo.getPath());
 
-    public void pushFileToGitHub(String localFilePath, String remoteRepoUrl, String branch, String folder, String username, String token) {
-        File localRepoDir = new File("generationSpace"); // Temporäres Verzeichnis für das Git-Repository
-
-        try {
-            // Initialisiere ein neues Git-Repository im lokalen Verzeichnis
-            Repository repository = FileRepositoryBuilder.create(new File(localRepoDir, ".git"));
-            repository.create();
-
-            try (Git git = new Git(repository)) {
-                // Zielordner im Repository erstellen
-                File targetFolder = new File(localRepoDir, folder);
-                if (!targetFolder.exists() && !targetFolder.mkdirs()) {
-                    throw new IOException("Failed to create target folder in the Git repository directory");
-                }
-
-                // Kopiere die Datei in den Zielordner
-                File fileToCommit = new File(localFilePath);
-                File targetFile = new File(targetFolder, fileToCommit.getName());
-                if (!fileToCommit.renameTo(targetFile)) {
-                    throw new IOException("Failed to move file to the target folder");
-                }
-
-                // Füge die Datei dem Git-Index hinzu (mit Pfad im Repository)
-                String relativeFilePath = folder + "/" + fileToCommit.getName();
-                git.add().addFilepattern(relativeFilePath).call();
-
-                // Erstelle einen Commit
-                git.commit().setMessage("Add " + relativeFilePath).call();
-
-                // Konfiguriere die Remote-URL (inkl. Authentifizierung)
-                String remoteUrlWithCredentials = remoteRepoUrl.replace(
-                        "https://", "https://" + username + ":" + token + "@"
-                );
-                git.remoteAdd()
-                        .setName("origin")
-                        .setUri(new URIish(remoteUrlWithCredentials))
-                        .call();
-
-                // Pushe den Commit in das Remote-Repository
-                git.push()
-                        .setRemote("origin")
-                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, token))
-                        .call();
-
-                System.out.println("File pushed successfully to folder: " + folder + " on branch: " + branch);
-            }
-        } catch (GitAPIException | IOException | URISyntaxException e) {
-            e.printStackTrace();
-        } finally {
-            // Bereinige das temporäre Verzeichnis
-            deleteDirectory(localRepoDir);
+        if(git != null){
+            createFile(new File(dir.getPath() + dirForFileInRepo.getPath()), fileContent);
         }
+    }
+
+    private void createFile(File file, String content) throws IOException {
+        try {
+
+            file.getParentFile().mkdirs();
+            try (PrintWriter out = new PrintWriter(file)) {
+                out.print(content);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Git cloneRepositoryWithNoCheckoutToDir(File dir, UsernamePasswordCredentialsProvider user, RepositoryInfo repository) {
+        try {
+            if (user != null) {
+                return Git.cloneRepository()
+                        .setURI(repository.htmlUrl)
+                        .setDirectory(dir)
+                        .setNoCheckout(true)
+                        .setCredentialsProvider(
+                                user
+                        ).call();
+            }
+            LOG.info("TOKEN IS NULL");
+            return null;
+        } catch (GitAPIException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void pushRepository(Git g, UsernamePasswordCredentialsProvider user, String addPath) throws GitAPIException {
+        g.add().addFilepattern(Objects.requireNonNull(addPath)).call();
+
+        g.commit().setMessage("Deployment Files where Automatically pushed to your GitHub Repository").call();
+
+        g.push().setCredentialsProvider(user).setRemote("origin").call();
+
     }
 
     // Rekursive Methode zum Löschen eines Verzeichnisses

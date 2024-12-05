@@ -24,7 +24,8 @@ public class GithubResource {
     public Response handleGitHubCallback(@QueryParam("code") String code){
         try {
             UserConnector userConnector = githubService.getUserData(code);
-            
+
+
             return Response.ok(userConnector).build();
         } catch (Exception e) {
             return Response.serverError().build();

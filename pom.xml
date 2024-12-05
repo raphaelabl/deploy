@@ -67,6 +67,11 @@
             <artifactId>camel-quarkus-jasypt</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkiverse.githubapi</groupId>
+            <artifactId>quarkus-github-api</artifactId>
+            <version>1.322.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
