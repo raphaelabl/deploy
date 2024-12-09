@@ -1,44 +1,23 @@
-<div class="screen row">
-  <div *ngIf="ghUser !== null && ghUser !== undefined && ghUser.username !== ''">
-    <p>Logged in with GitHub: {{ghUser.username}} <button class="logout-button" (click)="logOut()">Log Out</button></p>
-    <hr class="w-25">
-  </div>
-  <!--Step 0 GitHub Loggin---->
-  <ng-container *ngIf="step === 0 && (ghUser === null || ghUser === undefined || ghUser.username === '')">
-    <h3>Github Login</h3>
-    <h5>For the deployment, we need your Github Repository and rights to write files in it.</h5>
-    <div style="margin-top: 100px">
-      <a class="link-body-emphasis" href="https://github.com/login/oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&scope=repo,user">
-        Login with Github
-      </a>
-    </div>
-  </ng-container>
+<div class="screen row" *ngIf="!spinner">
 
-  <!--Step 1 Repository Selection---->
-  <ng-container *ngIf="step === 1">
-    <h3>Repository Selection</h3>
-    <h5>Please select the Repository which should be Deployed!</h5>
-    <hr>
-    <div class="col-3">
-      <mat-selection-list [multiple]="false" [(ngModel)]="inputWorkflow.ghRepository" role="list">
-        <mat-list-option *ngFor="let r of ghUser!.repositories" [value]="r">{{ r.name }}</mat-list-option>
-      </mat-selection-list>
-    </div>
-  </ng-container>
-
-  <!--Step 2 Module Select---->
-  <ng-container *ngIf="step === 2">
+  <!--Step 1 Module Select---->
+  <ng-container *ngIf="step === 1 && !spinner">
     <h3>Select your Modules</h3>
     <hr>
-    <div class="col-3">
+    <div class="col-5">
+
       <mat-selection-list [(ngModel)]="selectedJobTemplate" (selectionChange)="moduleSelectionChange()" role="list">
         <mat-list-option *ngFor="let j of allJobTemplates" [value]="j">{{ j.name }}</mat-list-option>
       </mat-selection-list>
+
+      <button class="btn btn-primary w-100">
+        Auto Select your Modules from the Repository
+      </button>
     </div>
   </ng-container>
 
-  <!--Step 3 Variable Definition---->
-  <ng-container *ngIf="step === 3">
+  <!--Step 2 Variable Definition---->
+  <ng-container *ngIf="step === 2 && !spinner">
     <h3>Variable specification</h3>
     <h5>Please specify all required variables!</h5>
     <hr>
@@ -47,36 +26,35 @@
         <p>{{m.name}}</p>
         <mat-form-field *ngFor="let a of m.attributeList">
           <mat-label>{{a.name}}</mat-label>
-          <input matInput [(ngModel)]="a.value">
+          <input matInput [(ngModel)]="a.value" >
         </mat-form-field>
       </ng-container>
     </div>
   </ng-container>
 
-  <!--Step 3 Variable specification--
-  <ng-container *ngIf="step === 4">
-    <h3>Variable specification</h3>
-    <h5>Please specify all required variables!</h5>
+  <!--Step 3 Overview---->
+  <ng-container *ngIf="step === 3 && !spinner">
+    <h3>Overview</h3>
+    <h5>Your Settings</h5>
     <hr>
-    <div class="col-3">
-      <mat-selection-list [(ngModel)]="selectedJobTemplate" role="list">
-        <mat-list-option *ngFor="let j of allJobTemplates" [value]="j">{{ j.name }}</mat-list-option>
-      </mat-selection-list>
-    </div>
-  </ng-container>-->
+    <p>Your Settings</p>
+  </ng-container>
+
 
 </div>
-
+<div class="spinner-middle" *ngIf="spinner">
+  <mat-spinner style="width: 5rem"></mat-spinner>
+</div>
 <!----------Navigation Buttons---------->
-<div class="nxt-btn" *ngIf="(ghUser !== null && ghUser !== undefined)">
+<div class="nxt-btn" *ngIf="(!PersistenceUtils.isNullOrUndefined(ghUser)) && !spinner">
   <div>
-    <button mat-raised-button *ngIf="step !== 0" (click)="addSiteStep(-1)">
+    <button mat-raised-button *ngIf="step !== 1" (click)="addSiteStep(-1)">
       Back <i class="fas fa-arrow-left"></i>
     </button>
-    <button mat-raised-button *ngIf="step <= 3" [disabled]="!canForwardStep()" (click)="addSiteStep(+1)" style="margin-left: 0.2rem">
+    <button mat-raised-button *ngIf="step <= 2" [disabled]="!canForwardStep()" (click)="addSiteStep(+1)" style="margin-left: 0.2rem">
       Next <i class="fas fa-arrow-right"></i>
     </button>
-    <button mat-raised-button *ngIf="step === 4" (click)="saveWorkflow()" style="margin-left: 0.2rem">
+    <button mat-raised-button *ngIf="step === 3" (click)="saveWorkflow()" style="margin-left: 0.2rem">
       Save <i class="fas fa-arrow-right"></i>
     </button>
   </div>

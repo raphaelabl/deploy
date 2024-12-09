@@ -1,0 +1,55 @@
+<div class="screen row">
+  <div *ngIf="ghUser !== null && ghUser !== undefined && ghUser.username !== ''">
+    <p>Logged in with GitHub: {{ghUser.username}} <button class="logout-button" (click)="logOut()">Log Out</button></p>
+    <hr class="w-25">
+  </div>
+
+
+  <!--Step 0 GitHub Loggin---->
+  <ng-container *ngIf="ghUser === null || ghUser === undefined || ghUser.username === ''">
+    <h3>Github Login</h3>
+    <h5>For the deployment, we need your Github Repository and rights to write files in it.</h5>
+    <div style="margin-top: 100px">
+      <a class="link-body-emphasis" href="https://github.com/login/oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&scope=repo,user">
+        Login with Github
+      </a>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="deployments.length === 0 || deployments === null || deployments === undefined">
+    <h1 style="margin-bottom: 5rem">No deployments from user {{ghUser.username}} were found!</h1>
+  </ng-container>
+  <ng-container *ngIf="deployments !== null && deployments !== undefined && deployments.length !== 0">
+    <h1 style="margin-bottom: 5rem">Your Deployments</h1>
+
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let deploy of deployments" style="border-width: 2px">
+        <h4>{{ deploy.deploymentName }}</h4>
+        <hr style="height: 1px;">
+        <div class="row d-flex justify-content-between w-100">
+          <div class="col-8 d-flex justify-content-evenly">
+            <label>State: {{deploy.state}}</label>
+            <label>Repository-Name: {{deploy.repository!.name}}</label>
+            <label>Error-Amount: {{deploy.errors?.length}}</label>
+
+          </div>
+          <div class="col-2 list-buttons">
+            <button class="btn" (click)="editDeployment(deploy)">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn" (click)="newWorkflow(deploy)">
+              <i class="fas fa-project-diagram"></i>
+            </button>
+            <button class="btn">
+              <i class="fas fa-file-code"></i>
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+</div>
+<div class="nxt-btn">
+  <h3 >Create new Deployment <button class="btn btn-secondary" (click)="newDeployDialog()"><i class="fas fa-plus"></i></button></h3>
+</div>

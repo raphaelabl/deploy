@@ -1,0 +1,15 @@
+.screen{
+  margin: 3rem;
+}
+
+.col-style{
+  margin: 1rem;
+}
+
+.repository-list{
+  max-height: 30rem; /* Feste Höhe */
+  overflow-y: auto; /* Scrollbar aktivieren */
+  border: 1px solid #ddd; /* Optional: Rahmen für bessere Sichtbarkeit */
+  padding: 0.5rem; /* Optional: Innenabstand */
+  border-radius: 5px; /* Optional: Abgerundete Ecken */
+}

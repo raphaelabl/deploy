@@ -7,19 +7,20 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.jboss.logging.Logger;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -37,7 +38,7 @@ public class GithubService {
     public UserConnector getUserData(String code){
         UserConnector userConnector = new UserConnector();
         try {
-            userConnector.token = getAccessToken(code);
+            userConnector.setToken(getAccessToken(code));
             userConnector.username = getUserNamePerToken(userConnector.token);
             userConnector.repositories = getRepositoriesPerToken(userConnector.token);
         } catch (IOException | InterruptedException e) {
@@ -57,11 +58,12 @@ public class GithubService {
         deleteDirectory(dir);
 
         Git git = cloneRepositoryWithNoCheckoutToDir(dir, user, repository);
-        pushRepository(git, user, dirForFileInRepo.getPath());
-
         if(git != null){
             createFile(new File(dir.getPath() + dirForFileInRepo.getPath()), fileContent);
         }
+
+        pushRepository(git, user, dir.getPath() + dirForFileInRepo.getPath(), repository.htmlUrl);
+
     }
 
     private void createFile(File file, String content) throws IOException {
@@ -83,24 +85,33 @@ public class GithubService {
                 return Git.cloneRepository()
                         .setURI(repository.htmlUrl)
                         .setDirectory(dir)
-                        .setNoCheckout(true)
                         .setCredentialsProvider(
                                 user
                         ).call();
             }
-            LOG.info("TOKEN IS NULL");
             return null;
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void pushRepository(Git g, UsernamePasswordCredentialsProvider user, String addPath) throws GitAPIException {
-        g.add().addFilepattern(Objects.requireNonNull(addPath)).call();
+    private void pushRepository(Git g, UsernamePasswordCredentialsProvider user, String fullFilePath, String repoUrl) throws GitAPIException {
+
+        File f = new File(fullFilePath);
+        if(!f.exists()){
+            return;
+        }
+
+        g.add().addFilepattern(".").call();
 
         g.commit().setMessage("Deployment Files where Automatically pushed to your GitHub Repository").call();
 
-        g.push().setCredentialsProvider(user).setRemote("origin").call();
+        try {
+            g.remoteSetUrl().setRemoteName("origin").setRemoteUri(new URIish(repoUrl));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        g.push().setRemote("origin").setCredentialsProvider(user).call();
 
     }
 
@@ -199,7 +210,6 @@ public class GithubService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         ObjectMapper mapper = new ObjectMapper();
         String token = mapper.readTree(response.body()).get("access_token").asText();
-        LOG.info("Got access token: " + token);
         return token;
     }
     //endregion

@@ -4,8 +4,6 @@ import {RepositoryInfo} from './repository-info';
 
 export interface Workflow {
   id?: number;
-  ghUser?: UserConnector;
-  ghRepository?: RepositoryInfo;
   modules?: Job[];
   name?: string;
 }

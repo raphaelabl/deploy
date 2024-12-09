@@ -1,0 +1,24 @@
+.screen{
+  display: flex;
+  margin: 3rem;
+  align-content: center;
+  justify-content: center;
+}
+
+.nxt-btn{
+  position: fixed; /* Buttons bleiben an einem festen Platz */
+  bottom: 20px; /* Abstand von unten */
+  right: 20px; /* Abstand von rechts */
+  z-index: 1000; /* Buttons über anderen Elementen anzeigen */
+  display: flex; /* Flexbox für Anordnung */
+  gap: 10px; /* Abstand zwischen den Buttons */
+}
+
+.logout-button{
+  background-color: transparent;
+  border: none;
+}
+
+.list-buttons{
+
+}

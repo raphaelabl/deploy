@@ -20,7 +20,7 @@ export class CreateTemplateComponent implements OnInit {
 
   jobTemplateList: JobTemplate[] = [];
 
-  inputJobTemplate: JobTemplate = {variables: []};
+  inputJobTemplate: JobTemplate = {workflowVariables: []};
   inputVariable: {value: string, idx: number} = {value: "", idx: -1};
 
   private snackBar: MatSnackBar = inject(MatSnackBar);
@@ -38,16 +38,16 @@ export class CreateTemplateComponent implements OnInit {
       return;
     }
 
-    this.inputJobTemplate.variables =
-      (this.inputJobTemplate.variables === null || this.inputJobTemplate.variables === undefined)?
+    this.inputJobTemplate.workflowVariables =
+      (this.inputJobTemplate.workflowVariables === null || this.inputJobTemplate.workflowVariables === undefined)?
         []:
-        this.inputJobTemplate.variables;
+        this.inputJobTemplate.workflowVariables;
 
     if(this.inputVariable.idx === -1){
-      this.inputJobTemplate.variables = [...this.inputJobTemplate.variables, this.inputVariable.value];
+      this.inputJobTemplate.workflowVariables = [...this.inputJobTemplate.workflowVariables, this.inputVariable.value];
       this.inputVariable = {value: "", idx: -1};
     }else{
-      this.inputJobTemplate.variables[this.inputVariable.idx] = this.inputVariable.value;
+      this.inputJobTemplate.workflowVariables[this.inputVariable.idx] = this.inputVariable.value;
       this.inputVariable = {value: "", idx: -1};
     }
 
@@ -57,11 +57,11 @@ export class CreateTemplateComponent implements OnInit {
   }
 
   popVarAt(i: number): void {
-    this.inputJobTemplate.variables = this.inputJobTemplate.variables!.filter((value: string, index: number)=> index !== i);
+    this.inputJobTemplate.workflowVariables = this.inputJobTemplate.workflowVariables!.filter((value: string, index: number)=> index !== i);
   }
 
   editVar(editIndex: number): void {
-    this.inputVariable = {value: this.inputJobTemplate.variables![editIndex], idx: editIndex};
+    this.inputVariable = {value: this.inputJobTemplate.workflowVariables![editIndex], idx: editIndex};
   }
   //endregion
 
@@ -74,18 +74,18 @@ export class CreateTemplateComponent implements OnInit {
   //region Validation
 
   getMissingVariables(jobTemplate: JobTemplate): string[] {
-    if(jobTemplate === undefined || jobTemplate === null || jobTemplate.variables === undefined || jobTemplate.variables === null){
+    if(jobTemplate === undefined || jobTemplate === null || jobTemplate.workflowVariables === undefined || jobTemplate.workflowVariables === null){
         return ["Unvalid Jobtemplate"];
     }
 
     let variables: string[] = [];
     let match;
 
-    while ((match = this.regex.exec(jobTemplate.filePart!)) !== null) {
+    while ((match = this.regex.exec(jobTemplate.workflowFileContent!)) !== null) {
       variables.push(match[1]); // Extrahiere nur den Inhalt innerhalb der #{ }
     }
 
-    return jobTemplate.variables!.filter(item => !variables.includes(item));
+    return jobTemplate.workflowVariables!.filter(item => !variables.includes(item));
   }
 
   checkValidation(): boolean{

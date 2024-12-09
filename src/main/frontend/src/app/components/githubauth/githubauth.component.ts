@@ -18,7 +18,7 @@ export class GithubauthComponent implements OnInit {
   constructor(private route: ActivatedRoute, private http: HttpService, private router: Router, private userService: UserService) {
     this.isConnected = userService.isUserLoggedIn();
     if(this.isConnected){
-      this.router.navigate(['workflow-creation']);
+      this.router.navigate(['deployment-overview']);
     }
   }
 
@@ -33,7 +33,7 @@ export class GithubauthComponent implements OnInit {
             if(data !== null && data !== undefined) {
               localStorage.setItem('github_token', data.token);
               this.userService.setUserConnector(data);
-              this.router.navigate(['/workflow-creation']);
+              this.router.navigate(['/deployment-overview']);
             }
             //Hier kommt später die Benutzerverwaltung...
 

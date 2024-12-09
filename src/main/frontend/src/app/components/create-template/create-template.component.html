@@ -1,18 +1,10 @@
 <div class="row outerStyle">
   <div class="col-6 input-form">
     <mat-form-field>
-      <mat-label>Job Name</mat-label>
+      <mat-label>Module Name</mat-label>
       <input matInput [(ngModel)]="inputJobTemplate.name" >
     </mat-form-field>
-    <mat-form-field>
-      <!--TODO later dropdown--->
-      <mat-label>Runs On</mat-label>
-      <input matInput [(ngModel)]="inputJobTemplate.runsOn">
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Job</mat-label>
-      <textarea cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="20" matInput [(ngModel)]="inputJobTemplate.filePart!"></textarea>
-    </mat-form-field>
+
     <button mat-raised-button (click)="postJobTemplate()">Submit</button>
   </div>
   <div class="col-3 d-flex flex-column" *ngIf="inputJobTemplate.id != null && inputJobTemplate.id != 0">
@@ -28,7 +20,7 @@
     <div class="varList">
       <mat-label>Variablen</mat-label>
       <mat-list role="list" class="varList w-100">
-        <mat-list-item *ngFor="let v of inputJobTemplate!.variables; let i = index"
+        <mat-list-item *ngFor="let v of inputJobTemplate!.workflowVariables; let i = index"
                        class="w-100" style="border-top: 1px solid #ccc;">
           <div class="item-content">
             <p>{{v}}</p>

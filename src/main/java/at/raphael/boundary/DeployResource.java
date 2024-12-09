@@ -1,11 +1,9 @@
 package at.raphael.boundary;
 
 import at.raphael.control.DeployService;
-import at.raphael.entity.Workflow;
+import at.raphael.entity.DeploymentInfo;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -20,14 +18,25 @@ public class DeployResource {
     @Inject
     DeployService deployService;
 
+    @POST
+    @Path("/post/deploymentInfo")
+    public Response postDeploymentInfo(DeploymentInfo deploymentInfo) {
+        return Response.ok(this.deployService.persistDeployment(deploymentInfo)).build();
+    }
+
+    @GET
+    @Path("allFromUser/{username}")
+    public Response allFromUser(@PathParam("username") String username) {
+        return Response.ok(deployService.fromUser(username)).build();
+    }
 
     @GET
     @Path("withGitfromId/{id}")
     public Response deployToGit(@PathParam("id") Long id) throws IOException, GitAPIException {
-        Workflow w = Workflow.findById(id);
+        DeploymentInfo deploymentInfo = DeploymentInfo.findById(id);
 
         List<String> errors = new ArrayList<>();
-        errors.add(deployService.createWorkflow(w));
+        errors.add(deployService.deploy(deploymentInfo));
 
         errors = errors.stream().filter(element -> !element.isEmpty()).collect(Collectors.toList());
 

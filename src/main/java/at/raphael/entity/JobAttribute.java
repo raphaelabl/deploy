@@ -9,21 +9,21 @@ public class JobAttribute extends PanacheEntity {
     public String name;
     public String value;
 
-//    public void update(JobAttribute newEntity) {
-//        this.name = newEntity.name;
-//        this.value = newEntity.value;
-//    }
-//
-//    public JobAttribute saveOrUpdate(){
-//        if(this.id == null|| this.id == 0){
-//            this.persist();
-//            return this;
-//        }
-//
-//        JobAttribute persited = JobAttribute.findById(this.id);
-//        persited.update(this);
-//        return persited;
-//    }
+    public void update(JobAttribute newEntity) {
+        this.name = newEntity.name;
+        this.value = newEntity.value;
+    }
+
+    public JobAttribute persistOrUpdate() {
+        if(this.id == null|| this.id == 0){
+            this.persist();
+            return this;
+        }
+
+        JobAttribute persisted = JobAttribute.findById(this.id);
+        persisted.update(this);
+        return persisted;
+    }
 
     //region Constructor
     public JobAttribute() {

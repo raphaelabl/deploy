@@ -27,7 +27,7 @@ public class UserConnector extends PanacheEntity {
         this.token = token;
     }
 
-    // Setzt das Token und verschlüsselt es
+    //region Token
     public void setToken(String token) {
         this.token = token;
         this.encryptedToken = EncryptionUtils.encrypt(token); // Token verschlüsseln
@@ -47,4 +47,5 @@ public class UserConnector extends PanacheEntity {
     public void setEncryptedToken(String encryptedToken) {
         this.encryptedToken = encryptedToken;
     }
+    //endregion
 }

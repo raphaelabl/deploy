@@ -5,6 +5,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -13,43 +14,50 @@ public class Job extends PanacheEntity {
 
     public String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     public JobTemplate refTemplate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    public List<JobAttribute> attributeList;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<JobAttribute> workflowAttributeList;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<JobAttribute> dockerfileAttributeList;
 
 
-//    public void update(Job newEntity){
-//        this.name = newEntity.name;
-//        this.refTemplate = refTemplate.saveOrUpdate();
-//
-//        this.attributeList = new ArrayList<>();
-//        for(JobAttribute attr : newEntity.attributeList){
-//            this.attributeList.add(attr.saveOrUpdate());
-//        }
-//
-//        this.attributeList = newEntity.attributeList;
-//    }
-//
-//    public Job saveOrUpdate(){
-//        if(this.id == null|| this.id == 0){
-//            this.id = null;
-//
-//            for(JobAttribute attr : this.attributeList){
-//                attr = attr.saveOrUpdate();
-//            }
-//
-//            this.refTemplate = refTemplate.saveOrUpdate();
-//
-//            this.persist();
-//            return this;
-//        }
-//
-//        Job persited = Job.findById(this.id);
-//        persited.update(this);
-//        return persited;
-//    }
+    public void update(Job newEntity){
+        this.name = newEntity.name;
+        this.refTemplate = JobTemplate.findById(newEntity.refTemplate.id);
+
+        this.workflowAttributeList.clear();
+        for (JobAttribute attribute : newEntity.workflowAttributeList) {
+            this.workflowAttributeList.add(attribute.persistOrUpdate());
+        }
+
+        this.dockerfileAttributeList.clear();
+        for (JobAttribute attribute : newEntity.dockerfileAttributeList) {
+            this.dockerfileAttributeList.add(attribute.persistOrUpdate());
+        }
+    }
+
+    @Transactional
+    public Job persistOrUpdate(){
+
+        if(this.id == null || this.id == 0){
+            if(!this.refTemplate.isPersistent()){
+                this.refTemplate = JobTemplate.findById(this.refTemplate.id);
+            }
+            this.persist();
+
+            return this;
+        }
+
+        Job j = Job.findById(this.id);
+        j.name = this.name;
+        j.update(this);
+
+        return j;
+
+    }
 
     //region Constructor
     public Job() {
@@ -58,7 +66,8 @@ public class Job extends PanacheEntity {
     public Job(String name, JobTemplate refTemplate, List<JobAttribute> attributeList) {
         this.name = name;
         this.refTemplate = refTemplate;
-        this.attributeList = attributeList;
+        this.workflowAttributeList = attributeList;
+        this.dockerfileAttributeList = attributeList;
     }
     //endregion
 

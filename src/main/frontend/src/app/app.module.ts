@@ -17,6 +17,8 @@ import { LandingComponent } from './components/landing/landing.component';
 import { GithubauthComponent } from './components/githubauth/githubauth.component';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatTooltip} from '@angular/material/tooltip';
+import { DeploymentOverviewComponent } from './components/deployment-overview/deployment-overview.component';
+import {DeploymentCreationComponent} from './components/deployment-creation/deployment-creation.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import {MatTooltip} from '@angular/material/tooltip';
     CreateTemplateComponent,
     WorkflowCreationComponent,
     LandingComponent,
-    GithubauthComponent
+    GithubauthComponent,
+    DeploymentOverviewComponent,
+    DeploymentCreationComponent,
   ],
   imports: [
     BrowserAnimationsModule,

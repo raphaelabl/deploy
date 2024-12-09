@@ -25,7 +25,6 @@ public class GithubResource {
         try {
             UserConnector userConnector = githubService.getUserData(code);
 
-
             return Response.ok(userConnector).build();
         } catch (Exception e) {
             return Response.serverError().build();

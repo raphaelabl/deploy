@@ -1,10 +1,13 @@
-import {Component, input, OnInit} from '@angular/core';
+import {Component, Inject, input, OnInit} from '@angular/core';
 import {HttpService} from '../../services/http.service';
 import {JobTemplate} from '../../models/job-template';
 import {Workflow} from '../../models/workflow.model';
 import {UserService} from '../../services/user.service';
 import {UserConnector} from '../../models/user-connector';
 import {Job} from '../../models/job';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {DeploymentInfo} from '../../models/deployment-info';
+import {PersistenceUtils} from '../../utils';
 
 @Component({
   selector: 'app-workflow-creation',
@@ -15,8 +18,7 @@ import {Job} from '../../models/job';
 })
 export class WorkflowCreationComponent implements OnInit {
 
-  clientId = 'Ov23li8HrLXJ9gME6pH5'; // Von GitHub erhalten
-  redirectUri = 'http://localhost:4200/github/callback'; // Frontend-URL
+  spinner: boolean = true;
 
   ghUser!: UserConnector;
 
@@ -27,16 +29,22 @@ export class WorkflowCreationComponent implements OnInit {
 
   step: number = 0;
 
-  constructor(private http: HttpService, private userService: UserService) {
+  constructor(
+    private http: HttpService,
+    private userService: UserService,
+    private dialogRef: MatDialogRef<WorkflowCreationComponent>,
+    @Inject(MAT_DIALOG_DATA) public deploymentInfo: DeploymentInfo,
+  ) {
+
     if(userService.isUserLoggedIn()){
       this.ghUser = userService.getUserConnector();
-      this.inputWorkflow.ghUser = this.ghUser;
       this.step++;
     }
   }
 
   //region Init
   ngOnInit(): void {
+    this.spinner = true;
     this.loadAllJobTemplates();
   }
   //endregion
@@ -47,38 +55,61 @@ export class WorkflowCreationComponent implements OnInit {
   }
 
   addJobReferences(){
-    if(this.inputWorkflow.modules === null || this.inputWorkflow.modules === undefined){
+    if(this.inputWorkflow.modules === null || this.inputWorkflow.modules === undefined || this.inputWorkflow.modules.length === 0){
+      //When the modules are undefined
       this.inputWorkflow.modules = this.createJobFromJobTemplate(this.selectedJobTemplate)
     }else{
+      //Add new selected Jobs
       let newSelected = this.selectedJobTemplate
         .filter(
           element => !this.inputWorkflow.modules!
             .map(module => module.refTemplate!.name)
             .includes(element.name)
         );
+      console.log(newSelected);
       this.inputWorkflow.modules = [...this.inputWorkflow.modules, ...this.createJobFromJobTemplate(newSelected)]
     }
+    //Remove all deselected Jobs
     this.inputWorkflow.modules = this.inputWorkflow.modules
       .filter(
         element => this.selectedJobTemplate
           .map(job => job.name)
           .includes(element.refTemplate!.name)
       );
+
+    console.log(this.inputWorkflow.modules);
   }
 
   createJobFromJobTemplate(jobTemplates: JobTemplate[]): Job[]{
-    return jobTemplates.map(element => {
+
+    let result: Job[] = jobTemplates.map(element => {
       return {
         name: element.name,
         refTemplate: element,
-        attributeList: element.variables!.map(jobVariable => {
-            return {
-              name: jobVariable,
-              value: ""
-            }
-          })
+        attributeList: element.workflowVariables!.map(jobVariable => {
+          return {
+            name: jobVariable,
+            value: ""
+          }
+        })
       }
     });
+
+    console.log("result")
+    console.log(result);
+
+    result.forEach(element => {
+      if(!PersistenceUtils.isNullOrUndefined(this.deploymentInfo.workflow) && !PersistenceUtils.isNullOrUndefined(this.deploymentInfo.workflow!.modules)) {
+        let existing = this.deploymentInfo.workflow!.modules!
+          .find(persistedJob => persistedJob.refTemplate!.name === element.refTemplate!.name && PersistenceUtils.isEntityPersisted(persistedJob))
+
+        if(PersistenceUtils.isEntityPersisted(existing)){
+          element = existing!;
+        }
+      }
+    })
+
+    return result;
   }
 
   //endregion
@@ -88,6 +119,19 @@ export class WorkflowCreationComponent implements OnInit {
     this.http.getAllJobTemplates().subscribe({
       next: data => {
         this.allJobTemplates = data;
+
+        if(
+          PersistenceUtils.isEntityPersisted(this.deploymentInfo) &&
+          PersistenceUtils.isEntityPersisted(this.deploymentInfo.workflow)
+        ){
+          //If the workflow is already persisted it is getting loaded
+          this.inputWorkflow = this.deploymentInfo.workflow!;
+          this.selectedJobTemplate = this.allJobTemplates.filter(
+            job => this.deploymentInfo.workflow!.modules!.map(element => element.refTemplate!.name!).flat().includes(job.name!)
+          );
+        }
+
+        this.spinner = false;
       },
       error: err => {
         console.error(err);
@@ -96,14 +140,22 @@ export class WorkflowCreationComponent implements OnInit {
   }
 
   saveWorkflow(){
-    this.http.postWorkflow(this.inputWorkflow).subscribe({
-      next: data => {
-        this.inputWorkflow = data;
-      },
-      error: err => {
-        console.log(err)
-      }
-    })
+    this.spinner = true;
+    if(
+      PersistenceUtils.isEntityPersisted(this.deploymentInfo) &&
+      PersistenceUtils.isEntityPersisted(this.deploymentInfo.ghUser)
+    ){
+      this.http.postWorkflow(this.inputWorkflow, this.deploymentInfo.id!, this.deploymentInfo.ghUser!.id!).subscribe({
+        next: data => {
+          this.inputWorkflow = data;
+          this.spinner = false;
+          this.dialogRef.close();
+        },
+        error: err => {
+          console.log(err)
+        }
+      })
+    }
   }
   //endregion
 
@@ -113,13 +165,9 @@ export class WorkflowCreationComponent implements OnInit {
   }
 
   canForwardStep(){
-    if(this.step === 0 && this.userService.isUserLoggedIn()){
+    if(this.step === 1 && this.selectedJobTemplate !== undefined && this.selectedJobTemplate.length >= 0){
       return true;
-    }else if(this.step === 1 && this.inputWorkflow.ghRepository !== null && this.inputWorkflow.ghRepository !== undefined){
-      return true;
-    }else if(this.step === 2 && this.inputWorkflow.modules !== undefined && this.inputWorkflow.modules!.length >= 0){
-      return true;
-    }else if(this.step === 3){
+    }else if(this.step === 2){
       let attributes = this.inputWorkflow.modules!
                                   .map(element =>
                                     element.attributeList!.map(attribute => attribute.value)
@@ -131,19 +179,11 @@ export class WorkflowCreationComponent implements OnInit {
   }
   //endregion
 
-  //region GitHub Authentication
-  logOut(){
-    this.userService.logOut();
-    this.ghUser = undefined!;
-    this.inputWorkflow.ghUser = undefined!;
-    this.step = 0;
-  }
-  //endregion
-
   //region Testing
     testLog(obj: any){
       console.log(obj);
     }
   //endregion
 
+  protected readonly PersistenceUtils = PersistenceUtils;
 }

@@ -1,0 +1,28 @@
+<div class="screen row">
+  <div class="col-4 col-style">
+    <h3>Repository Selection</h3>
+    <h5>Please select the Repository which should be Deployed!</h5>
+    <hr>
+    <mat-selection-list class="repository-list" [multiple]="false" [(ngModel)]="repoSelection" role="list">
+      <mat-list-option *ngFor="let r of ghUser!.repositories" [value]="r">{{ r.name }}</mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div class="col-4 col-style" *ngIf="repoSelection.length > 0">
+    <h3>General</h3>
+    <h5 style="margin-bottom: 2.5rem">Information for your Deployment</h5>
+    <hr>
+    <mat-form-field style="width: 100%">
+      <mat-label>Name of the Deployment</mat-label>
+      <input matInput [(ngModel)]="inputDeployment.deploymentName" >
+    </mat-form-field>
+  </div>
+  <div class="col-3 col-style" *ngIf="repoSelection.length > 0">
+    <h3>Deployment Steps</h3>
+    <h5>What Steps should the Program take?</h5>
+    <hr>
+    <mat-selection-list class="repository-list" [(ngModel)]="inputDeployment.selectedDeploymentSteps" role="list">
+      <mat-list-option *ngFor="let step of deploymentSteps" [value]="step">{{ step }}</mat-list-option>
+    </mat-selection-list>
+  </div>
+  <button class="btn btn-secondary" (click)="saveDeployment()">Save new Deployment</button>
+</div>

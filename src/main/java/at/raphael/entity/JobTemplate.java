@@ -15,28 +15,28 @@ public class JobTemplate extends PanacheEntity {
     public String runsOn;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    public List<String> variables;
-
+    public List<String> workflowVariables;
     @Column(columnDefinition = "TEXT")
-    public String filePart;
-//
-//    public void update(JobTemplate newEntity) {
-//        this.name = newEntity.name;
-//        this.runsOn = newEntity.runsOn;
-//        this.variables = newEntity.variables;
-//        this.filePart = newEntity.filePart;
-//    }
-//
-//    public JobTemplate saveOrUpdate(){
-//        if(this.id == null|| this.id == 0){
-//            this.persist();
-//            return this;
-//        }
-//
-//        JobTemplate persited = JobTemplate.findById(this.id);
-//        persited.update(this);
-//        return persited;
-//    }
+    public String workflowFileContent;
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    public List<String> dockerFileVariables;
+    @Column(columnDefinition = "TEXT")
+    public String dockerFileContent;
+
+    public void update(JobTemplate newEntity) {
+        this.name = newEntity.name;
+        this.runsOn = newEntity.runsOn;
+
+        this.workflowVariables = newEntity.workflowVariables;
+        this.workflowFileContent = newEntity.workflowFileContent;
+
+       this.dockerFileVariables = newEntity.dockerFileVariables;
+       this.dockerFileContent = newEntity.dockerFileContent;
+
+    }
+
 
     //region Constructor
     public JobTemplate() {
