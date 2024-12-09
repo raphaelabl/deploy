@@ -22,23 +22,19 @@ public class JobResource {
     @Path("addTemplate")
     @Transactional
     public Response addJobTemplate(JobTemplate jobTemplate) {
-        JobTemplate responseTemplate = jobTemplate;
 
         if(jobTemplate.id == null || jobTemplate.id == 0) {
             jobTemplate.persist();
         }else{
             JobTemplate persited = JobTemplate.findById(jobTemplate.id);
             //persited.update(jobTemplate);
+            persited.update(jobTemplate);
 
-            persited.filePart = jobTemplate.filePart;
-            persited.name = jobTemplate.name;
-            persited.variables = jobTemplate.variables;
-            persited.runsOn = jobTemplate.runsOn;
 
-            responseTemplate = persited;
+            return Response.ok(persited).build();
         }
 
-        return Response.ok(responseTemplate).build();
+        return Response.ok(jobTemplate).build();
     }
 
 

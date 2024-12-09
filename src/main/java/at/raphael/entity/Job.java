@@ -1,10 +1,7 @@
 package at.raphael.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -18,24 +15,26 @@ public class Job extends PanacheEntity {
     public JobTemplate refTemplate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<JobAttribute> workflowAttributeList;
+    @JoinTable(name = "job_workflow_attributes")
+    public List<JobAttribute> workflowAttributes;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<JobAttribute> dockerfileAttributeList;
+    @JoinTable(name = "job_dockerfile_attributes")
+    public List<JobAttribute> dockerfileAttributes;
 
 
     public void update(Job newEntity){
         this.name = newEntity.name;
         this.refTemplate = JobTemplate.findById(newEntity.refTemplate.id);
 
-        this.workflowAttributeList.clear();
-        for (JobAttribute attribute : newEntity.workflowAttributeList) {
-            this.workflowAttributeList.add(attribute.persistOrUpdate());
+        this.workflowAttributes.clear();
+        for (JobAttribute attribute : newEntity.workflowAttributes) {
+            this.workflowAttributes.add(attribute.persistOrUpdate());
         }
 
-        this.dockerfileAttributeList.clear();
-        for (JobAttribute attribute : newEntity.dockerfileAttributeList) {
-            this.dockerfileAttributeList.add(attribute.persistOrUpdate());
+        this.dockerfileAttributes.clear();
+        for (JobAttribute attribute : newEntity.dockerfileAttributes) {
+            this.dockerfileAttributes.add(attribute.persistOrUpdate());
         }
     }
 
@@ -66,8 +65,8 @@ public class Job extends PanacheEntity {
     public Job(String name, JobTemplate refTemplate, List<JobAttribute> attributeList) {
         this.name = name;
         this.refTemplate = refTemplate;
-        this.workflowAttributeList = attributeList;
-        this.dockerfileAttributeList = attributeList;
+        this.workflowAttributes = attributeList;
+        this.dockerfileAttributes = attributeList;
     }
     //endregion
 

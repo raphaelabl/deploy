@@ -5,5 +5,6 @@ export interface Job {
   id?: number;
   name?: string;
   refTemplate?: JobTemplate;
-  attributeList?: JobAttribute[];
+  workflowAttributes?: JobAttribute[];
+  dockerfileAttributes?: JobAttribute[];
 }

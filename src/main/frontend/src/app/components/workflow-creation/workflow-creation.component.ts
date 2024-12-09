@@ -66,7 +66,6 @@ export class WorkflowCreationComponent implements OnInit {
             .map(module => module.refTemplate!.name)
             .includes(element.name)
         );
-      console.log(newSelected);
       this.inputWorkflow.modules = [...this.inputWorkflow.modules, ...this.createJobFromJobTemplate(newSelected)]
     }
     //Remove all deselected Jobs
@@ -77,7 +76,6 @@ export class WorkflowCreationComponent implements OnInit {
           .includes(element.refTemplate!.name)
       );
 
-    console.log(this.inputWorkflow.modules);
   }
 
   createJobFromJobTemplate(jobTemplates: JobTemplate[]): Job[]{
@@ -86,7 +84,13 @@ export class WorkflowCreationComponent implements OnInit {
       return {
         name: element.name,
         refTemplate: element,
-        attributeList: element.workflowVariables!.map(jobVariable => {
+        workflowAttributes: element.workflowVariables!.map(jobVariable => {
+          return {
+            name: jobVariable,
+            value: ""
+          }
+        }),
+        dockerfileAttributes: element.dockerFileVariables!.map(jobVariable => {
           return {
             name: jobVariable,
             value: ""
@@ -94,9 +98,6 @@ export class WorkflowCreationComponent implements OnInit {
         })
       }
     });
-
-    console.log("result")
-    console.log(result);
 
     result.forEach(element => {
       if(!PersistenceUtils.isNullOrUndefined(this.deploymentInfo.workflow) && !PersistenceUtils.isNullOrUndefined(this.deploymentInfo.workflow!.modules)) {
@@ -119,7 +120,6 @@ export class WorkflowCreationComponent implements OnInit {
     this.http.getAllJobTemplates().subscribe({
       next: data => {
         this.allJobTemplates = data;
-
         if(
           PersistenceUtils.isEntityPersisted(this.deploymentInfo) &&
           PersistenceUtils.isEntityPersisted(this.deploymentInfo.workflow)
@@ -140,6 +140,7 @@ export class WorkflowCreationComponent implements OnInit {
   }
 
   saveWorkflow(){
+
     this.spinner = true;
     if(
       PersistenceUtils.isEntityPersisted(this.deploymentInfo) &&
@@ -169,9 +170,18 @@ export class WorkflowCreationComponent implements OnInit {
       return true;
     }else if(this.step === 2){
       let attributes = this.inputWorkflow.modules!
-                                  .map(element =>
-                                    element.attributeList!.map(attribute => attribute.value)
-                                  ).flat()
+                                  .map(element => {
+                                    if(element.workflowAttributes){
+                                      return element.workflowAttributes!.map(attribute => attribute.value)
+                                    }
+                                    return []
+                                  }).flat()
+      attributes = [...attributes,...this.inputWorkflow.modules!.map(element => {
+        if(element.dockerfileAttributes){
+          return element.dockerfileAttributes!.map(attributes => attributes.value)
+        }
+        return []
+      }).flat()]
       return attributes.filter(element => (element === null || element === undefined || element === "")).length === 0;
     }
 

@@ -23,11 +23,20 @@
     <hr>
     <div class="row">
       <ng-container class="col-3" *ngFor="let m of inputWorkflow.modules">
-        <p>{{m.name}}</p>
-        <mat-form-field *ngFor="let a of m.attributeList">
-          <mat-label>{{a.name}}</mat-label>
-          <input matInput [(ngModel)]="a.value" >
-        </mat-form-field>
+        @if(!PersistenceUtils.isNullOrUndefined(m.workflowAttributes) && m.workflowAttributes!.length !== 0){
+          <p>{{m.name}} - GH-Action</p>
+          <mat-form-field *ngFor="let a of m.workflowAttributes">
+            <mat-label>{{a.name}}</mat-label>
+            <input matInput [(ngModel)]="a.value" >
+          </mat-form-field>
+        }
+        @if(!PersistenceUtils.isNullOrUndefined(m.dockerfileAttributes) && m.dockerfileAttributes!.length !== 0){
+          <p>{{m.name}} - Docker-File</p>
+          <mat-form-field *ngFor="let a of m.dockerfileAttributes">
+            <mat-label>{{a.name}}</mat-label>
+            <input matInput [(ngModel)]="a.value" >
+          </mat-form-field>
+        }
       </ng-container>
     </div>
   </ng-container>

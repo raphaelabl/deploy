@@ -96,7 +96,7 @@ public class DeployService {
 
         for (Job job : deploymentInfo.workflow.modules){
             String jobTemplateContent = job.refTemplate.workflowFileContent;
-            for (JobAttribute jobAttribute : job.workflowAttributeList){
+            for (JobAttribute jobAttribute : job.workflowAttributes){
                 String tmpPlaceHolder = "#{" + jobAttribute.name + "}#";
                 jobTemplateContent = jobTemplateContent
                         .replace(tmpPlaceHolder, jobAttribute.value!=null?jobAttribute.value:"")
