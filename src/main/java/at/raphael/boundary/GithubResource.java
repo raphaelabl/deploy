@@ -17,6 +17,12 @@ public class GithubResource {
     GithubService githubService;
 
 
+    public class GitHubContent {
+        public String name;
+        public String path;
+        public String type; // "file" oder "dir"
+    }
+
     @GET
     @Path("/callback")
     @Produces(MediaType.APPLICATION_JSON)
