@@ -11,7 +11,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-    build-frontend:
+  build-frontend:
     name: build-frontend-prod
     runs-on: ubuntu-latest
     steps:
