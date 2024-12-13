@@ -1,7 +1,7 @@
 ## A basic GitHub Actions workflow for your Quarkus application.
  
 name: CI build
- 
+
 on:
   push:
     branches: [ main ]
@@ -11,7 +11,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-       build-frontend:
+   build-frontend:
      name: build-frontend-prod
      runs-on: ubuntu-latest
      steps:
