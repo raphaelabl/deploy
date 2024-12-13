@@ -30,14 +30,14 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./deploy/src/main/frontend/
+          context: ./
           file: ./deploy/src/main/frontend/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/deploy-angular:latest
           build-args: |
             configuration=production
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/deploy-angular:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/deploy-angular:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache,mode=max
 
   build-backend:
     name: build-backend-prod
@@ -75,8 +75,8 @@ jobs:
           context: ./deploy/
           file: ./deploy/src/main/docker/Dockerfile.jvm
           push: true
-          tags: ${{ env.REGISTRY }}/deploy-quarkus:latest
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/deploy-quarkus:latest
+          tags: ${{ env.REGISTRY }}/raphaelabl/deploy-quarkus:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-quarkus:latest
           cache-to: type=inline
 
 
