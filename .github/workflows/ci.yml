@@ -1,7 +1,7 @@
 ## A basic GitHub Actions workflow for your Quarkus application.
  
 name: CI build
- 
+
 on:
   push:
     branches: [ main ]
@@ -12,9 +12,9 @@ env:
 
 jobs:
     build-frontend:
-    name: build-frontend-prod
-    runs-on: ubuntu-latest
-    steps:
+     name: build-frontend-prod
+     runs-on: ubuntu-latest
+     steps:
       - uses: actions/checkout@v3
 
       - name: Log in to the Container registry
@@ -38,11 +38,11 @@ jobs:
             configuration=production
           cache-from: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache,mode=max
-
-  build-backend:
-    name: build-backend-prod
-    runs-on: ubuntu-latest
-    steps:
+          
+    build-backend:
+     name: build-backend-prod
+     runs-on: ubuntu-latest
+     steps:
       - uses: actions/checkout@v3
 
       - name: Set up JDK 
