@@ -66,9 +66,10 @@ public class KafkaService {
                         JobTemplate jobTemplate = JobTemplate.findById(element.jobTemplateId);
                         if(jobTemplate == null || jobTemplate.id == 0)return;
                         job.name = jobTemplate.name;
+                        job.projectDirName = element.modulePath.split("/")[element.modulePath.split("/").length - 1];
                         job.refTemplate = jobTemplate;
                         job.pathToRoot = element.modulePath;
-                        job.dockerImageName = d.repository.name + "-" + job.name;
+                        job.dockerImageName = d.repository.fullName + "-" + job.name;
 
                         if (jobTemplate.workflowVariables != null && !jobTemplate.workflowVariables.isEmpty()) {
                             job.workflowAttributes = jobTemplate.workflowVariables
@@ -101,6 +102,12 @@ public class KafkaService {
                                     .filter(attribute -> "src".equals(attribute.name)) // Prüfen, ob der Name "src" ist
                                     .findAny()
                                     .ifPresent(attribute -> attribute.value = job.pathToRoot); // Attribut ändern
+
+                            job.dockerfileAttributes
+                                    .stream()
+                                    .filter(attribute -> "workdir-name".equals(attribute.name)) // Prüfen, ob der Name "src" ist
+                                    .findAny()
+                                    .ifPresent(attribute -> attribute.value = job.projectDirName); // Attribut ändern
 
                         }
 

@@ -12,6 +12,7 @@ public class Job extends PanacheEntity {
     public String name;
 
     public String pathToRoot;
+    public String projectDirName;
 
     public String dockerImageName;
 
