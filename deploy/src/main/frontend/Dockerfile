@@ -10,4 +10,4 @@ RUN npm run build --prod
 FROM nginx:alpine
 CMD ls /
 COPY --from=node /app/dist/frontend/ /usr/share/nginx/html
-COPY ./nginx-custom.conf /etc/nginx/conf.d/default.conf
+COPY nginx-custom.conf /etc/nginx/conf.d/default.conf
