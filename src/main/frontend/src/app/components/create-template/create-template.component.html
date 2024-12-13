@@ -7,10 +7,13 @@
 
     <button mat-raised-button (click)="postJobTemplate()">Submit</button>
   </div>
+  <div>
+    <button class="btn btn-primary" (click)="toggle(1)">Workflow</button>
+    <button class="btn btn-primary" (click)="toggle(2)">Dockerfile</button>
+    <button class="btn btn-primary" (click)="toggle(3)">Dockercompose</button>
+  </div>
   <!----Workflow Toggle Site----->
   <div class="col-5 d-flex flex-column" *ngIf="inputJobTemplate.id != null && inputJobTemplate.id != 0 && site === 1">
-    <button (click)="toggle(1)">Workflow</button>
-    <button (click)="toggle(2)">Dockerfile</button>
     <mat-form-field>
       <mat-label>Variable eingeben</mat-label>
       <input matInput [(ngModel)]="inputWorkflowVariable.value">
@@ -45,8 +48,6 @@
 
   <!----Dockerfile Toggle Size----->
   <div class="col-5 d-flex flex-column" *ngIf="inputJobTemplate.id != null && inputJobTemplate.id != 0 && site === 2">
-    <button (click)="toggle(1)">Workflow</button>
-    <button (click)="toggle(2)">Dockerfile</button>
     <mat-form-field>
       <mat-label>Variable eingeben</mat-label>
       <input matInput [(ngModel)]="inputDockerVariable.value">
@@ -79,6 +80,39 @@
     </div>
   </div>
 
+  <!----Dockercompose Toggle Size----->
+  <div class="col-5 d-flex flex-column" *ngIf="inputJobTemplate.id != null && inputJobTemplate.id != 0 && site === 3">
+    <mat-form-field>
+      <mat-label>Variable eingeben</mat-label>
+      <input matInput [(ngModel)]="inputDockerComposeVariable.value">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Copy Variable</mat-label>
+      <input matInput [disabled]="true" [ngModel]="'#{'+inputDockerComposeVariable.value+'}#'">
+    </mat-form-field>
+    <button mat-raised-button (click)="addDockerComposeVariable()">{{(inputDockerComposeVariable.idx === -1)?"Add variable":"Edit variable"}}</button>
+    <div class="varList">
+      <mat-label>Variablen</mat-label>
+      <mat-list role="list" class="varList w-100">
+        <mat-list-item *ngFor="let v of inputJobTemplate!.dockerComposeVariables; let i = index"
+                       class="w-100" style="border-top: 1px solid #ccc;">
+          <div class="item-content">
+            <p>{{v}}</p>
+            <div>
+              <button mat-raised-button (click)="editDockerComposeVar(i)"><i class="fas fa-edit"></i></button>
+              <button mat-raised-button (click)="popDockerComposeVarAt(i)" style="margin-left: 0.2rem"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div class="input-form">
+      <mat-form-field appearance="fill">
+        <mat-label>Dockercompose-Content</mat-label>
+        <textarea cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="20" matInput [(ngModel)]="inputJobTemplate.dockerComposeContent!"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
 
   <!---Module List--->
   <div class="col-1 input-form">
@@ -89,7 +123,18 @@
 </div>
 
 
-
+<!----Identifier List---->
+<div class="col-5 input-form" *ngIf="PersistenceUtils.isEntityPersisted(inputJobTemplate)">
+    <button class="btn btn-primary" (click)="inputJobTemplate.identificationFiles!.push('')">Add File</button>
+    <div *ngFor="let item of inputJobTemplate.identificationFiles; let i = index;trackBy: trackByFn">
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="inputJobTemplate.identificationFiles![i]"
+        placeholder="File {{ i + 1 }}"
+      />
+    </div>
+</div>
 
 
 <ng-container class="errorList">

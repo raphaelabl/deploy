@@ -30,9 +30,16 @@
             <input matInput [(ngModel)]="a.value" >
           </mat-form-field>
         }
-        @if(!PersistenceUtils.isNullOrUndefined(m.dockerfileAttributes) && m.dockerfileAttributes!.length !== 0){
+        @if(!PersistenceUtils.isNullOrUndefined(m.dockerComposeAttributes) && m.dockerfileAttributes!.length !== 0){
           <p>{{m.name}} - Docker-File</p>
           <mat-form-field *ngFor="let a of m.dockerfileAttributes">
+            <mat-label>{{a.name}}</mat-label>
+            <input matInput [(ngModel)]="a.value" >
+          </mat-form-field>
+        }
+        @if(!PersistenceUtils.isNullOrUndefined(m.dockerComposeAttributes) && m.dockerComposeAttributes!.length !== 0){
+          <p>{{m.name}} - Docker-Compose</p>
+          <mat-form-field *ngFor="let a of m.dockerComposeAttributes">
             <mat-label>{{a.name}}</mat-label>
             <input matInput [(ngModel)]="a.value" >
           </mat-form-field>

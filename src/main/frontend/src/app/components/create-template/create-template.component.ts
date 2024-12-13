@@ -3,6 +3,7 @@ import {JobTemplate} from '../../models/job-template';
 import {HttpService} from '../../services/http.service';
 import {writeErrorToLogFile} from '@angular/cli/src/utilities/log-file';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {PersistenceUtils} from '../../utils';
 
 @Component({
   selector: 'app-create-template',
@@ -24,6 +25,7 @@ export class CreateTemplateComponent implements OnInit {
   inputJobTemplate: JobTemplate = {workflowVariables: []};
   inputWorkflowVariable: {value: string, idx: number} = {value: "", idx: -1};
   inputDockerVariable: {value: string, idx: number} = {value: "", idx: -1};
+  inputDockerComposeVariable: {value: string, idx: number} = {value: "", idx: -1};
 
   private snackBar: MatSnackBar = inject(MatSnackBar);
 
@@ -43,8 +45,6 @@ export class CreateTemplateComponent implements OnInit {
     if(this.inputWorkflowVariable.value.length == 0){
       return;
     }
-
-    var varChange = (this.site === 0)?this.inputJobTemplate.workflowVariables : this.inputJobTemplate.dockerFileVariables;
 
     this.inputJobTemplate.workflowVariables =
       (this.inputJobTemplate.workflowVariables === null || this.inputJobTemplate.workflowVariables === undefined)?
@@ -79,8 +79,6 @@ export class CreateTemplateComponent implements OnInit {
       return;
     }
 
-    var varChange = (this.site === 0)?this.inputJobTemplate.dockerFileVariables : this.inputJobTemplate.dockerFileVariables;
-
     this.inputJobTemplate.dockerFileVariables =
       (this.inputJobTemplate.dockerFileVariables === null || this.inputJobTemplate.dockerFileVariables === undefined)?
         []:
@@ -105,6 +103,39 @@ export class CreateTemplateComponent implements OnInit {
 
   editDockerVar(editIndex: number): void {
     this.inputDockerVariable = {value: this.inputJobTemplate.dockerFileVariables![editIndex], idx: editIndex};
+  }
+  //endregion
+
+  //region Dockercompose Variables
+  addDockerComposeVariable(): void {
+    if(this.inputDockerComposeVariable.value.length == 0){
+      return;
+    }
+
+    this.inputJobTemplate.dockerComposeVariables =
+      (this.inputJobTemplate.dockerComposeVariables === null || this.inputJobTemplate.dockerComposeVariables === undefined)?
+        []:
+        this.inputJobTemplate.dockerComposeVariables;
+
+    if(this.inputDockerComposeVariable.idx === -1){
+      this.inputJobTemplate.dockerComposeVariables = [...this.inputJobTemplate.dockerComposeVariables, this.inputDockerComposeVariable.value];
+      this.inputDockerComposeVariable = {value: "", idx: -1};
+    }else{
+      this.inputJobTemplate.dockerComposeVariables[this.inputDockerComposeVariable.idx] = this.inputDockerComposeVariable.value;
+      this.inputDockerComposeVariable = {value: "", idx: -1};
+    }
+
+    if(this.inputJobTemplate.id !== null && this.inputJobTemplate.id !== undefined && this.inputJobTemplate.id !== 0) {
+      this.postJobTemplate(true);
+    }
+  }
+
+  popDockerComposeVarAt(i: number): void {
+    this.inputJobTemplate.dockerComposeVariables = this.inputJobTemplate.dockerComposeVariables!.filter((value: string, index: number)=> index !== i);
+  }
+
+  editDockerComposeVar(editIndex: number): void {
+    this.inputDockerComposeVariable = {value: this.inputJobTemplate.dockerComposeVariables![editIndex], idx: editIndex};
   }
   //endregion
 
@@ -180,4 +211,11 @@ export class CreateTemplateComponent implements OnInit {
     }
   }
   //endregion
+
+
+  trackByFn(index: number, item: any): number {
+    return index; // oder ein eindeutiger Identifier für `item`
+  }
+
+  protected readonly PersistenceUtils = PersistenceUtils;
 }

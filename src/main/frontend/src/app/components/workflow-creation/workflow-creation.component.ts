@@ -45,6 +45,7 @@ export class WorkflowCreationComponent implements OnInit {
   //region Init
   ngOnInit(): void {
     this.spinner = true;
+    console.log(this.deploymentInfo);
     this.loadAllJobTemplates();
   }
   //endregion
@@ -91,6 +92,12 @@ export class WorkflowCreationComponent implements OnInit {
           }
         }),
         dockerfileAttributes: element.dockerFileVariables!.map(jobVariable => {
+          return {
+            name: jobVariable,
+            value: ""
+          }
+        }),
+        dockerComposeAttributes: element.dockerComposeVariables!.map(jobVariable => {
           return {
             name: jobVariable,
             value: ""
@@ -162,6 +169,7 @@ export class WorkflowCreationComponent implements OnInit {
 
   //region Site Paging
   addSiteStep(amount: number) {
+    console.log(this.inputWorkflow.modules)
     this.step += amount;
   }
 

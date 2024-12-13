@@ -28,6 +28,10 @@ export class HttpService {
     return this.http.post<DeploymentInfo>(`${environment.API_URL}deploy/post/deploymentInfo`, deploymentInfo);
   }
 
+  uploadFilesToGithub(deployment: DeploymentInfo): Observable<string> {
+    return this.http.post<string>(`${environment.API_URL}deploy/uploadToGithub`,deployment);
+  }
+
   //endregion
 
 
@@ -42,9 +46,6 @@ export class HttpService {
 
   //region Workflow
   postWorkflow(workflow: Workflow, deployId: number, userId: number):Observable<Workflow> {
-
-    console.log(workflow);
-
     return this.http.post<Workflow>(this.BACKEND_URL + "workflow/addWorkflow", workflow, {params: {
                                                                                               deploymentId: deployId,
                                                                                               userId: userId

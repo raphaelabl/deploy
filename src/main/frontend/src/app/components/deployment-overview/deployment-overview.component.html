@@ -32,17 +32,16 @@
             <label>State: {{deploy.state}}</label>
             <label>Repository-Name: {{deploy.repository!.name}}</label>
             <label>Error-Amount: {{deploy.errors?.length}}</label>
-
           </div>
           <div class="col-2 list-buttons">
-            <button class="btn" (click)="editDeployment(deploy)">
+            <button class="btn" matTooltip="Check your Deployment" (click)="editDeployment(deploy)">
               <i class="fas fa-pen"></i>
             </button>
-            <button class="btn" (click)="newWorkflow(deploy)">
-              <i class="fas fa-project-diagram"></i>
+            <button class="btn" matTooltip="Settings and Variables" (click)="newWorkflow(deploy)">
+              <i class="fas fa-cog"></i>
             </button>
-            <button class="btn">
-              <i class="fas fa-file-code"></i>
+            <button class="btn" matTooltip="Upload Files to Repository" (click)="uploadFiles(deploy)">
+              <i class="fas fa-file-upload"></i>
             </button>
           </div>
         </div>

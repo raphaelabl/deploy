@@ -7,4 +7,5 @@ export interface Job {
   refTemplate?: JobTemplate;
   workflowAttributes?: JobAttribute[];
   dockerfileAttributes?: JobAttribute[];
+  dockerComposeAttributes?: JobAttribute[];
 }

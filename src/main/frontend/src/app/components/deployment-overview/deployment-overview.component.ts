@@ -57,6 +57,18 @@ export class DeploymentOverviewComponent implements OnInit {
     })
   }
 
+  uploadFiles(deploymentInfo: DeploymentInfo){
+    this.http.uploadFilesToGithub(deploymentInfo).subscribe({
+      next: data => {
+        deploymentInfo.state = data;
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
+  }
+
+
   newWorkflow(deployment: DeploymentInfo){
     let dialogRef = this.dialog.open(WorkflowCreationComponent, {
       width: '90%',
