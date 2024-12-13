@@ -38,8 +38,7 @@ jobs:
             configuration=production
           cache-from: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/raphaelabl/deploy-angular:buildcache,mode=max
-
-    build-backend:
+   build-backend:
      name: build-backend-prod
      runs-on: ubuntu-latest
      steps:
