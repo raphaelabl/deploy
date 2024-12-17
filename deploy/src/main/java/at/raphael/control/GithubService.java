@@ -41,6 +41,16 @@ public class GithubService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        if(userConnector.username != null && !userConnector.username.isEmpty()) {
+            UserConnector persisted = UserConnector.find("username", userConnector.username).firstResult();
+            if(persisted != null) {
+                return persisted;
+            }
+        }else{
+            userConnector.persist();
+        }
+
         return userConnector;
     }
 

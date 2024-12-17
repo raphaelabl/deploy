@@ -19,8 +19,7 @@ export class DeploymentOverviewComponent implements OnInit {
   deployments: DeploymentInfo[] = [];
   ghUser: UserConnector = undefined!;
 
-  clientId = 'Ov23li8HrLXJ9gME6pH5'; // Von GitHub erhalten
-  redirectUri = 'http://localhost:4200/github/callback'; // Frontend-URL
+
 
   constructor(
     private userService: UserService,

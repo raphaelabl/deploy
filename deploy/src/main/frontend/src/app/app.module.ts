@@ -19,6 +19,14 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatTooltip} from '@angular/material/tooltip';
 import { DeploymentOverviewComponent } from './components/deployment-overview/deployment-overview.component';
 import {DeploymentCreationComponent} from './components/deployment-creation/deployment-creation.component';
+import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
+import {NgOptimizedImage} from '@angular/common';
+import { AutociComponent } from './components/more/autoci/autoci.component';
+import { GithubLoginComponent } from './components/github-login/github-login.component';
+import { LizenzBuyComponent } from './components/lizenz-buy/lizenz-buy.component';
+import { ShopComponent } from './components/shop/shop.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import { AccountComponent } from './components/account/account.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +37,11 @@ import {DeploymentCreationComponent} from './components/deployment-creation/depl
     GithubauthComponent,
     DeploymentOverviewComponent,
     DeploymentCreationComponent,
+    AutociComponent,
+    GithubLoginComponent,
+    LizenzBuyComponent,
+    ShopComponent,
+    AccountComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -46,6 +59,11 @@ import {DeploymentCreationComponent} from './components/deployment-creation/depl
     MatSelectionList,
     MatProgressSpinner,
     MatTooltip,
+    MatCard,
+    MatCardHeader,
+    MatCardContent,
+    NgOptimizedImage,
+    MatCheckbox,
   ],
   providers: [],
   bootstrap: [AppComponent]

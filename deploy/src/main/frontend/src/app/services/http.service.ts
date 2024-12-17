@@ -7,6 +7,7 @@ import {UserConnector} from '../models/user-connector';
 import {Workflow} from '../models/workflow.model';
 import {DeploymentInfo} from '../models/deployment-info';
 import {Job} from '../models/job';
+import {UserData} from '../models/user-data';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,15 @@ export class HttpService {
   //endregion
 
   //region Github-Auth
+
+  getUserFromUsername(username: string){
+    return this.http.get<UserConnector>(this.BACKEND_URL + "user/withGithubUsername", {params: {username}});
+  }
+
+  postUserToUserConnector(user: UserConnector):Observable<UserConnector> {
+    return this.http.post<UserConnector>(this.BACKEND_URL + "user/dataToConnector", user);
+  }
+
   postCode(code: string): Observable<UserConnector>{
     return this.http.get<UserConnector>(this.BACKEND_URL + "github/callback", {params: {code: code}});
   }

@@ -1,0 +1,100 @@
+<div class="container mt-5">
+
+    <ng-container *ngIf="ghUser === null || ghUser === undefined || ghUser.username === ''">
+      <h3>Github Login</h3>
+      <h5>For the deployment, we need your Github Repository and rights to write files in it.</h5>
+      <div style="margin-top: 100px">
+        <a class="link-body-emphasis" href="https://github.com/login/oauth/authorize?client_id={{clientId}}&redirect_uri={{redirectUri}}&scope=repo,user">
+          Login with Github
+        </a>
+      </div>
+    </ng-container>
+
+  <div *ngIf="ghUser !== null && ghUser !== undefined">
+    Logged in with GitHub: {{ghUser.username}} <button class="logout-button" (click)="logOut()">Log Out</button>
+    <hr>
+    <h2>Account Information</h2>
+    <form (ngSubmit)="onSubmit()" #accountForm="ngForm">
+
+      <!-- Persönliche Informationen -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" class="form-control" [(ngModel)]="account.firstName" name="firstName" required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" class="form-control" [(ngModel)]="account.lastName" name="lastName" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="form-control" [(ngModel)]="account.email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" class="form-control" [(ngModel)]="account.phoneNumber" name="phoneNumber">
+      </div>
+
+      <!-- Adressinformationen -->
+      <h4 class="mt-4">Address Information</h4>
+
+      <div class="form-group">
+        <label for="place">Place</label>
+        <input type="text" id="place" class="form-control" [(ngModel)]="account.place" name="place">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="houseNumber">House Number</label>
+            <input type="text" id="houseNumber" class="form-control" [(ngModel)]="account.houseNumber" name="houseNumber">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="addressAddition">Address Addition</label>
+            <input type="text" id="addressAddition" class="form-control" [(ngModel)]="account.addressAddition" name="addressAddition">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="zipCode">Zip Code</label>
+            <input type="text" id="zipCode" class="form-control" [(ngModel)]="account.zipCode" name="zipCode">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="cityName">City</label>
+            <input type="text" id="cityName" class="form-control" [(ngModel)]="account.cityName" name="cityName">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="countryName">Country</label>
+        <input type="text" id="countryName" class="form-control" [(ngModel)]="account.countryName" name="countryName">
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-3" [disabled]="!accountForm.form.valid">Submit</button>
+    </form>
+  </div>
+
+  <div class="licenses">
+    <h3>Your Licenses</h3>
+    {{ghUser?.userData?.licenses}}
+  </div>
+
+</div>

@@ -1,0 +1,109 @@
+<div class="container my-5">
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 text-primary">Abkar Collection Shop</h1>
+    <p class="lead text-secondary">Choose individual modules or the complete package at a special price!</p>
+  </div>
+
+  <div class="row">
+    <!-- Individual Modules Section -->
+    <div class="col-12 mb-4">
+      <h3 class="text-primary">Individual Modules</h3>
+    </div>
+
+    <!-- Auto CI/CD Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header text-center bg-light">
+          <h4><i class="fas fa-code-branch text-primary"></i> Auto CI/CD</h4>
+        </div>
+        <div class="card-body text-center">
+          <p>Generate CI/CD pipelines with GitHub Actions and Docker.</p>
+          <h5 class="text-success">$6.99</h5>
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-primary btn-block" (click)="buyModule(1)">Buy Module</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tunneling Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header text-center bg-light">
+          <h4><i class="fas fa-toggle-on text-success"></i> Tunneling</h4>
+        </div>
+        <div class="card-body text-center">
+          <p>Open a public tunnel to your local application.</p>
+          <h5 class="text-muted">Module in Development</h5>
+          <p>Release expected: 20.02.2025</p>
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-secondary btn-block" disabled (click)="toggleModule(2)">Buy Module</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Generator Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header text-center bg-light">
+          <h4><i class="fas fa-database text-danger"></i> Model Generator</h4>
+        </div>
+        <div class="card-body text-center">
+          <p>Generate database models and CRUD APIs.</p>
+          <h5 class="text-muted">Module in Development</h5>
+          <p>Release expected: 19.03.2025</p>
+
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-secondary btn-block" disabled (click)="toggleModule(3)">Buy Module</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Package Section -->
+  <div class="row mt-5">
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header text-center bg-light">
+          <h4><i class="fas fa-database text-danger"></i>Native Deployment</h4>
+        </div>
+        <div class="card-body text-center">
+          <p>Natively build your Docker images and push them to your server.</p>
+          <h5 class="text-muted">Module in Development</h5>
+          <p>Release expected: 19.03.2025</p>
+
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-secondary btn-block" disabled (click)="toggleModule(4)">Buy Module</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="card shadow-lg border-success">
+        <div class="card-header bg-success text-white text-center">
+          <h3><i class="fas fa-cubes"></i> All Modules in One Package</h3>
+        </div>
+        <div class="card-body text-center">
+          <p>Get all Abkar Collection modules at a special price, even though some modules are still in development!</p>
+          <p><strong>For a limited time:</strong> Buy the complete package for the price of a single module and get the other modules as soon as they become available.</p>
+          <ul class="list-unstyled">
+            <li><i class="fas fa-check"></i> Auto CI/CD</li>
+            <li><i class="fas fa-hammer"></i> Tunneling (in development)</li>
+            <li><i class="fas fa-hammer"></i> Model Generator (in development)</li>
+            <li><i class="fas fa-hammer"></i> Native Deployment (in development)</li>
+          </ul>
+          <h4 class="text-success mt-3"><del>$21.97</del> <strong>$6.99</strong></h4>
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-success btn-lg btn-block" (click)="buyModule(-1)">Buy Complete Package</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-success btn-lg btn-block" (click)="toggleModule(-1)">Shopping Cart</button>
+    </div>
+  </div>
+</div>

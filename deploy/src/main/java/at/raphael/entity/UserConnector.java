@@ -2,16 +2,19 @@ package at.raphael.entity;
 
 import at.raphael.utils.EncryptionUtils;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 public class UserConnector extends PanacheEntity {
+
     public String username;
 
     public String encryptedToken;
+
+    @OneToOne
+    public UserData userData;
 
     @Transient
     public String token;
